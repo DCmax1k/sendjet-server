@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;800&display=swap'); /* font-family: 'Open Sans', sans-serif; */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.App {
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(100deg, rgb(254, 204, 168) 0%, rgb(188, 48, 47) 100%);
+  position: relative;
+}
+.HomePage {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.AlertBox {
+  position: absolute;
+  bottom: 100%;
+  left: 50vw;
+  transform: translateX(-50%);
+  padding: 20px 50px;
+  background: rgb(43, 7, 7);
+  text-align: center;
+  z-index: 2;
+  border-radius: 10px;
+  border: 2px solid white;
+  color: white;
+  max-width: 300px;
+
+  transition: bottom 0.3s ease;
+}
+.AlertBox.active {
+  bottom: 80%;
+}
+.AlertBox > p {
+  margin: 0 0 20px 0;
+  font-weight: bold;
+}
+
+.footer {
+  height: 50px;
+  width: 100vw;
+  background: #2B2B2B;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

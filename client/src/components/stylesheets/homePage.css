@@ -1,0 +1,116 @@
+
+.HomePage .title {
+    position: absolute;
+    left: 2vw;
+    top: 35%;
+    width: 45%;
+    z-index: 1;
+}
+.HomePage .title > img {
+    width: 100%;
+}
+.HomePage .title > p {
+    font-size: 2vw;
+    font-weight: bold;
+    color: #353535;
+    padding: 1vw 1vw 2vw 2vw;
+}
+
+.HomePage .rightSide {
+    position: absolute;
+    height: 150vw;
+    width: 200vw;
+    left: 45%;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(315deg, rgb(254, 204, 168) 35%, rgb(188, 48, 47) 100%);
+    border-radius: 50%;
+}
+.HomePage .rightSide > .content {
+    position: absolute;
+    left: 10vw;
+    top: 47%;
+    transform: translateY(-50%);
+    width: 35vw;
+}
+.HomePage .rightSide > .content > h2 {
+    font-size: 2vw;
+    font-weight: bold;
+    color: #353535;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 15vw;
+}
+.HomePage .rightSide > .content > .links > a {
+    text-decoration: none;
+}
+.HomePage .rightSide > .content > .links  .link {
+    width: 100%;
+    height: 7vw;
+    font-size: 3vw;
+    font-weight: bold;
+    border-radius: 20px;
+    text-decoration: none;
+    text-align: center;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.HomePage #signup {
+    color: #F2AD90;
+    background-color: #CD564D;
+    border: 2PX solid #D7D7D7
+}
+.HomePage #login {
+    color: #CD564D;
+    background-color: #F2AD90;
+    border: 2PX solid #CD564D
+}
+
+@media screen and (max-width: 1000px) {
+    .HomePage .title {
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+    }
+    .HomePage .title > p {
+        font-size: 30px;
+        text-align: center;
+    }
+
+    .HomePage .rightSide {
+        height: 200vw;
+        width: 180vw;
+        left: 50%;
+        top: 40%;
+        transform: translateX(-50%);
+    }
+    .HomePage .rightSide > .content {
+        left: 50%;
+        top: 100px;
+        transform: translateX(-50%);
+        width: 500px;
+    }
+    .HomePage .rightSide > .content > h2 {
+        font-size: 30px;
+        font-weight: bold;
+        color: #353535;
+        text-align: center;
+        width: 100%;
+        margin-bottom: 100px;
+    }
+    .HomePage .rightSide > .content > .links  .link {
+        height: 75px;
+        font-size: 40px;
+    }
+
+}
+
+@media screen and (max-width: 550px) {
+    .HomePage .rightSide > .content {
+        left: 50%;
+        width: 90vw;
+    }
+}
