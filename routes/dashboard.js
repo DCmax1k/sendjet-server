@@ -18,19 +18,10 @@ router.post('/', authToken, async (req, res) => {
     try {
         const user = await User.findById(req.userId);
         if (!user) return res.status(200).json({ status: 'error', message: 'User does not exist' });
+        res.cookie('auth-token', jwt_token, { httpOnly: true, expires: new Date(Date.now() + 20 * 365 * 24 * 60 * 60 * 1000) });
         res.json({
             status: 'success',
-            user: {
-                firstName: user.firstName,
-                lastName: user.lastName,
-                username: user.username,
-                email: user.email,
-                profilePicture: user.profilePicture,
-                warnings: user.warnings,
-                rank: user.rank,
-                emailVerified: user.emailVerified,
-                dateJoined: user.dateJoined,
-            },
+            user,
 
         });
     } catch(err) {
