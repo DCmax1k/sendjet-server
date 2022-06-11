@@ -2,7 +2,11 @@ const mongoose = require('mongoose');
 
 // DB user
 const ConvoSchema = new mongoose.Schema({
-    name: {
+    title: {
+        type: String,
+        required: true,
+    },
+    subTitle: {
         type: String,
         required: true,
     },
