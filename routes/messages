@@ -12,9 +12,16 @@ router.post('/createconversation', authToken, async (req, res) => {
         // CREATE CONVERSATION
         const user = await User.findById(req.userId);
         const members = [user._id, ...req.body.members];
+        let title = req.body.title;
+        let subTitle = req.body.subTitle;
+        if (req.body.members.length === 1) {
+            const memeber = await User.findById(req.body.members[0]);
+            title = memeber.username;
+            subTitle = memeber.firstName + ' ' + memeber.lastName;
+        }
         const convoData = {
-            title: req.body.title,
-            subTitle: req.body.subTitle,
+            title,
+            subTitle,
             members: members,
             messages: [],
         }
