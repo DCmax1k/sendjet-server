@@ -47,8 +47,11 @@ const UserSchema = new mongoose.Schema({
         default: 'user',
     },
     prefix: {
-        type: String,
-        default: '',
+        type: Object,
+        default: {
+            title: '',
+            color: '#a4a4a4',
+        },
     },
     verified: {
         type: Boolean,
