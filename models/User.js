@@ -40,7 +40,7 @@ const UserSchema = new mongoose.Schema({
     },
     profilePicture: {
         type: String,
-        default: '/images/profilePicture.png',
+        default: '/images/profilePlaceholder.png',
     },
     rank: {
         type: String,

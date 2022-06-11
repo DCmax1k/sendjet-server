@@ -20,4 +20,4 @@ const ConvoSchema = new mongoose.Schema({
     
 });
 
-module.exports = mongoose.model('Covnersation', ConvoSchema);
+module.exports = mongoose.model('Conversation', ConvoSchema);
