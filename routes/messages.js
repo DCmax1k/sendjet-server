@@ -29,9 +29,9 @@ router.post('/createconversation', authToken, async (req, res) => {
         await convo.save();
 
         // ADD CONVERSATION TO USERS
-        const users = members.map(async member => {
+        const users = await Promise.all(members.map(async member => {
             return await User.findById(member);
-        });
+        }))
         users.forEach(user => {
             user.conversations.push(convo._id);
             user.save();
