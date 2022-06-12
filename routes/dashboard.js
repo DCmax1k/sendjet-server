@@ -29,7 +29,7 @@ router.post('/', authToken, async (req, res) => {
             return pre;
         }));
         const friends = await Promise.all(user.friends.map(async friend => {
-            return JSON.parse(await User.findById(friend));
+            return await User.findById(friend);
         }));
 
         const jwt_token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
