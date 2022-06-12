@@ -29,7 +29,7 @@ router.post('/', authToken, async (req, res) => {
                 members: pre.members,
                 messages: pre.messages,
             }
-            members = await Promise.all(conversation.members.map(async member => {
+            const members = await Promise.all(conversation.members.map(async member => {
                 const mem = await User.findById(member);
                 return {
                     _id: mem._id,
@@ -42,6 +42,7 @@ router.post('/', authToken, async (req, res) => {
                     prefix: mem.prefix,
                 }
             }));
+            conversation.members = members;
             console.log(conversation.members);
             return conversation;
         }));
