@@ -21,12 +21,16 @@ router.post('/', authToken, async (req, res) => {
         if (!user) return res.status(200).json({ status: 'error', message: 'User does not exist' });
 
         const conversations = await Promise.all(user.conversations.map(async convo => {
-            return await Conversation.findById(convo);
+            const pre = await Conversation.findById(convo);
+            const members = await Promise.all(pre.members.map(async member => {
+                return await User.findById(member);
+            }));
+            pre.members = members;
+            return pre;
         }));
         const friends = await Promise.all(user.friends.map(async friend => {
             return await User.findById(friend);
         }));
-        console.log('friends',friends);
 
         const jwt_token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
         res.cookie('auth-token', jwt_token, { httpOnly: true, expires: new Date(Date.now() + 20 * 365 * 24 * 60 * 60 * 1000) });
