@@ -23,6 +23,19 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/client/build/index.html');
 });
 
+app.post('/searchuser', async (req, res) => {
+    try {
+        const user = await User.findById(req.id);
+        if (!user) return res.status(200).json({ status: 'error', message: 'User does not exist' });
+        res.json({
+            status: 'success',
+            user,
+        });
+    } catch(err) {
+        console.error(err);
+    }
+})
+
 // Routes
 const loginRoute = require('./routes/login');
 app.use('/login', loginRoute);
