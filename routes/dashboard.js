@@ -69,14 +69,14 @@ router.post('/', authToken, async (req, res) => {
         modifiedUser.friendRequests = friendRequests;
 
         console.log('user', modifiedUser);
-        console.log('conversations', modifiedConversations);
+        console.log('conversations', conversations);
 
         const jwt_token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
         res.cookie('auth-token', jwt_token, { httpOnly: true, expires: new Date(Date.now() + 20 * 365 * 24 * 60 * 60 * 1000) });
         res.json({
             status: 'success',
             user: modifiedUser,
-            conversations: modifiedConversations,
+            conversations,
             friends,
 
         });
