@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
 router.post('/', authToken, async (req, res) => {
     try {
         const user = await User.findById(req.userId);
-        const modifiedUser = {...user};
+        const {modifiedUser: _doc} = {...user};
         if (!user) return res.status(200).json({ status: 'error', message: 'User does not exist' });
 
         // const conversations = await Promise.all(user.conversations.map(async convo => {
@@ -48,11 +48,10 @@ router.post('/', authToken, async (req, res) => {
         //     return conversation;
         // }));
         const conversations = await Conversation.find({ _id: { $in: [user.conversations] } });
-        const modifiedConversations = [...conversations]
-        await Promise.all(modifiedConversations.map(async convo => {
-            const newConvo = {...convo};
+        await Promise.all(conversations.map(async convo => {
+            const {newConvo: _doc} = {...convo};
             const members = await User.find({ _id: { $in: newConvo.members } });
-            newConvo.members = [...members];
+            newConvo.members = members;
             console.log('members', newConvo.members);
             return newConvo;
         }));
