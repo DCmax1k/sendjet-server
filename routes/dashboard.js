@@ -35,9 +35,9 @@ router.post('/', authToken, async (req, res) => {
                     prefix: mem.prefix,
                 }
             }));
+            console.log(pre.members);
             return pre;
         }));
-        console.log(conversations[0].members);
         const friends = await Promise.all(user.friends.map(async friend => {
             return await User.findById(friend);
         }));
