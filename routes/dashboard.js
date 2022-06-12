@@ -50,7 +50,18 @@ router.post('/', authToken, async (req, res) => {
         await Promise.all(conversations.map(async convo => {
             const members = await User.find({ _id: { $in: convo.members } });
             console.log('members', members);
-            convo.members = members;
+            convo.members = members.map(mem => {
+                return {
+                    _id: mem._id,
+                    username: mem.username,
+                    firstName: mem.firstName,
+                    lastName: mem.lastName,
+                    profilePicture: mem.profilePicture,
+                    rank: mem.rank,
+                    verified: mem.verified,
+                    prefix: mem.prefix,
+                }
+            });
             return convo;
         }));
         console.log('conversations', conversations);
