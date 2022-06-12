@@ -26,6 +26,7 @@ router.post('/', authToken, async (req, res) => {
         const friends = await Promise.all(user.friends.map(async friend => {
             return await User.findById(friend);
         }));
+        console.log('friends',friends);
 
         const jwt_token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
         res.cookie('auth-token', jwt_token, { httpOnly: true, expires: new Date(Date.now() + 20 * 365 * 24 * 60 * 60 * 1000) });
