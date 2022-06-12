@@ -23,7 +23,17 @@ router.post('/', authToken, async (req, res) => {
         const conversations = await Promise.all(user.conversations.map(async convo => {
             const pre = await Conversation.findById(convo);
             const members = await Promise.all(pre.members.map(async member => {
-                return await User.findById(member);
+                const mem = await User.findById(member);
+                return {
+                    _id: mem._id,
+                    username: mem.username,
+                    firstName: mem.firstName,
+                    lastName: mem.lastName,
+                    profilePicture: mem.profilePicture,
+                    rank: mem.rank,
+                    verified: mem.verified,
+                    prefix: mem.prefix,
+                }
             }));
             pre.members = members;
             return pre;
