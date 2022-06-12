@@ -24,6 +24,9 @@ router.post('/createconversation', authToken, async (req, res) => {
             subTitle,
             members: members,
             messages: [],
+            dateCreated: Date.now(),
+            lastSentBy: user._id,
+            seenBy: [user._id],
         }
         const convo = await Conversation.create(convoData);
         await convo.save();

@@ -17,6 +17,18 @@ const ConvoSchema = new mongoose.Schema({
     messages: {
         type: [Object],
     },
+    dateCreated: {
+        type: Date,
+        default: Date.now,
+    },
+    lastSentBy: {
+        type: String,
+        required: true,
+    },
+    seenBy: {
+        type: [String],
+        required: true,
+    }
     
 });
 
