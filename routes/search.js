@@ -10,9 +10,8 @@ router.post('/', authToken, async (req, res) => {
     try {
         const query = req.body.query;
 
-        const searchUsername = await User.find({ $where: function () {
-            return /^.*?\b${query}\b.*?$/.test(this.username);
-        }  });
+        const allUsers = await User.find();
+        const searchUsername = allUsers.filter(user => user.username.toLowerCase().includes(query.toLowerCase()));
 
         res.json({
             status: 'success',
