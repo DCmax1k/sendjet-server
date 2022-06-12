@@ -56,7 +56,6 @@ router.post('/', authToken, async (req, res) => {
             console.log('members', newConvo.members);
             return newConvo;
         }));
-        console.log('conversations', modifiedConversations);
 
         // const friends = await Promise.all(user.friends.map(async friend => {
         //     return await User.findById(friend);
@@ -70,7 +69,8 @@ router.post('/', authToken, async (req, res) => {
         const friendRequests = await User.find({ _id: { $in: user.friendRequests } });
         modifiedUser.friendRequests = friendRequests;
 
-        console.log('user', user);
+        console.log('user', modifiedUser);
+        console.log('conversations', modifiedConversations);
 
         const jwt_token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
         res.cookie('auth-token', jwt_token, { httpOnly: true, expires: new Date(Date.now() + 20 * 365 * 24 * 60 * 60 * 1000) });
