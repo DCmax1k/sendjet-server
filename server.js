@@ -49,6 +49,9 @@ app.use('/dashboard', dashRoute);
 const messagesRoute = require('./routes/messages');
 app.use('/messages', messagesRoute);
 
+const searchRoute = require('./routes/search');
+app.use('/search', searchRoute);
+
 
 app.listen(process.env.PORT || 3001, () => {
     console.log('Server listening on port 3001');

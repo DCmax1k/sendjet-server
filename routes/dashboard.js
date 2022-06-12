@@ -20,35 +20,50 @@ router.post('/', authToken, async (req, res) => {
         const user = await User.findById(req.userId);
         if (!user) return res.status(200).json({ status: 'error', message: 'User does not exist' });
 
-        const conversations = await Promise.all(user.conversations.map(async convo => {
-            let pre = await Conversation.findById(convo);
-            const conversation = {
-                _id: pre._id,
-                title: pre.title,
-                subTitle: pre.subTitle,
-                members: pre.members,
-                messages: pre.messages,
-            }
-            const members = await Promise.all(conversation.members.map(async member => {
-                const mem = await User.findById(member);
-                return {
-                    _id: mem._id,
-                    username: mem.username,
-                    firstName: mem.firstName,
-                    lastName: mem.lastName,
-                    profilePicture: mem.profilePicture,
-                    rank: mem.rank,
-                    verified: mem.verified,
-                    prefix: mem.prefix,
-                }
-            }));
-            conversation.members = members;
-            console.log(conversation.members);
-            return conversation;
+        // const conversations = await Promise.all(user.conversations.map(async convo => {
+        //     let pre = await Conversation.findById(convo);
+        //     const conversation = {
+        //         _id: pre._id,
+        //         title: pre.title,
+        //         subTitle: pre.subTitle,
+        //         members: pre.members,
+        //         messages: pre.messages,
+        //     }
+        //     const members = await Promise.all(conversation.members.map(async member => {
+        //         const mem = await User.findById(member);
+        //         return {
+        //             _id: mem._id,
+        //             username: mem.username,
+        //             firstName: mem.firstName,
+        //             lastName: mem.lastName,
+        //             profilePicture: mem.profilePicture,
+        //             rank: mem.rank,
+        //             verified: mem.verified,
+        //             prefix: mem.prefix,
+        //         }
+        //     }));
+        //     conversation.members = members;
+        //     console.log(conversation.members);
+        //     return conversation;
+        // }));
+        const conversations = await Conversation.find({ members: { $in: [user.conversations] } });
+        await Promise.all(conversations.map(async convo => {
+            convo.members = await User.find({ _id: { $in: convo.members } });
+            return convo;
         }));
-        const friends = await Promise.all(user.friends.map(async friend => {
-            return await User.findById(friend);
-        }));
+        console.log('conversations', conversations);
+
+        // const friends = await Promise.all(user.friends.map(async friend => {
+        //     return await User.findById(friend);
+        // }));
+        const friends = await User.find({ _id: { $in: user.friends } });
+        console.log('friends', friends);
+
+        const addRequests = await User.find({ _id: { $in: user.addRequests } });
+        user.addRequests = addRequests;
+
+        const friendRequests = await User.find({ _id: { $in: user.friendRequests } });
+        user.friendRequests = friendRequests;
 
         const jwt_token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
         res.cookie('auth-token', jwt_token, { httpOnly: true, expires: new Date(Date.now() + 20 * 365 * 24 * 60 * 60 * 1000) });
