@@ -21,8 +21,8 @@ router.post('/', authToken, async (req, res) => {
         if (!user) return res.status(200).json({ status: 'error', message: 'User does not exist' });
 
         const conversations = await Promise.all(user.conversations.map(async convo => {
-            const pre = await Conversation.findById(convo);
-            const members = await Promise.all(pre.members.map(async member => {
+            let pre = await Conversation.findById(convo);
+            pre.members = await Promise.all(pre.members.map(async member => {
                 const mem = await User.findById(member);
                 return {
                     _id: mem._id,
@@ -35,7 +35,6 @@ router.post('/', authToken, async (req, res) => {
                     prefix: mem.prefix,
                 }
             }));
-            pre.members = members;
             return pre;
         }));
         console.log(conversations[0].members);
