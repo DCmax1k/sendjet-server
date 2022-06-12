@@ -48,21 +48,11 @@ router.post('/', authToken, async (req, res) => {
         // }));
         const conversations = await Conversation.find({ _id: { $in: [user.conversations] } });
         await Promise.all(conversations.map(async convo => {
-            const members = await User.find({ _id: { $in: convo.members } });
-            console.log('members', members);
-            convo.members = members.map(mem => {
-                return {
-                    _id: mem._id,
-                    username: mem.username,
-                    firstName: mem.firstName,
-                    lastName: mem.lastName,
-                    profilePicture: mem.profilePicture,
-                    rank: mem.rank,
-                    verified: mem.verified,
-                    prefix: mem.prefix,
-                }
-            });
-            return convo;
+            const newConvo = convo;
+            const members = await User.find({ _id: { $in: newConvo.members } });
+            newConvo.members = members;
+            console.log('members', newConvo.members);
+            return newConvo;
         }));
         console.log('conversations', conversations);
 
