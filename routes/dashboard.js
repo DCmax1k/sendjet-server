@@ -18,6 +18,7 @@ router.get('/', async (req, res) => {
 router.post('/', authToken, async (req, res) => {
     try {
         const user = await User.findById(req.userId);
+        const modifiedUser = {...user};
         if (!user) return res.status(200).json({ status: 'error', message: 'User does not exist' });
 
         // const conversations = await Promise.all(user.conversations.map(async convo => {
@@ -47,14 +48,15 @@ router.post('/', authToken, async (req, res) => {
         //     return conversation;
         // }));
         const conversations = await Conversation.find({ _id: { $in: [user.conversations] } });
-        await Promise.all(conversations.map(async convo => {
-            const newConvo = convo;
+        const modifiedConversations = [...conversations]
+        await Promise.all(modifiedConversations.map(async convo => {
+            const newConvo = {...convo};
             const members = await User.find({ _id: { $in: newConvo.members } });
-            newConvo.members = members;
+            newConvo.members = [...members];
             console.log('members', newConvo.members);
             return newConvo;
         }));
-        console.log('conversations', conversations);
+        console.log('conversations', modifiedConversations);
 
         // const friends = await Promise.all(user.friends.map(async friend => {
         //     return await User.findById(friend);
@@ -63,17 +65,19 @@ router.post('/', authToken, async (req, res) => {
         console.log('friends', friends);
 
         const addRequests = await User.find({ _id: { $in: user.addRequests } });
-        user.addRequests = addRequests;
+        modifiedUser.addRequests = addRequests;
 
         const friendRequests = await User.find({ _id: { $in: user.friendRequests } });
-        user.friendRequests = friendRequests;
+        modifiedUser.friendRequests = friendRequests;
+
+        console.log('user', user);
 
         const jwt_token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
         res.cookie('auth-token', jwt_token, { httpOnly: true, expires: new Date(Date.now() + 20 * 365 * 24 * 60 * 60 * 1000) });
         res.json({
             status: 'success',
-            user,
-            conversations,
+            user: modifiedUser,
+            conversations: modifiedConversations,
             friends,
 
         });
