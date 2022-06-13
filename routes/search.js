@@ -79,7 +79,7 @@ router.post('/acceptfriendrequest', authToken, async (req, res) => {
         const friendToModify = await User.findById(req.body.id);
         if (!friendToModify) return res.status(200).json({ status: 'error', message: 'Friend does not exist' });
 
-        user.friendRequests.pull(userToRemove._id);
+        user.friendRequests.pull(friendToModify._id);
         friendToModify.addRequests.pull(user._id);
         user.friends.push(friendToModify._id);
         friendToModify.friends.push(user._id);
@@ -100,7 +100,7 @@ router.post('/declinefriendrequest', authToken, async (req, res) => {
         const friendToModify = await User.findById(req.body.id);
         if (!friendToModify) return res.status(200).json({ status: 'error', message: 'Friend does not exist' });
 
-        user.friendRequests.pull(userToRemove._id);
+        user.friendRequests.pull(friendToModify._id);
         friendToModify.addRequests.pull(user._id);
         await user.save();
         await friendToModify.save();
