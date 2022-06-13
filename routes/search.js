@@ -53,7 +53,7 @@ router.post('/unadduser', authToken, async (req, res) => {
         else if (user.addRequests.includes(req.body.id)) friendStatus = 'added';
 
         const userToRemove = await User.findById(req.body.id);
-        if (!userToAdd) return res.status(200).json({ status: 'error', message: 'User does not exist' });
+        if (!userToRemove) return res.status(200).json({ status: 'error', message: 'User does not exist' });
 
         if (friendStatus === 'friends') {
             user.friends.pull(userToRemove._id);
