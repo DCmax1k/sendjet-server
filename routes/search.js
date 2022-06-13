@@ -44,6 +44,33 @@ router.post('/adduser', authToken, async (req, res) => {
     }
 });
 
+router.post('/unadduser', authToken, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId);
+        if (!user) return res.status(200).json({ status: 'error', message: 'User does not exist' });
+        let friendStatus = null;
+        if (user.friends.includes(req.body.id)) friendStatus = 'friends';
+        else if (user.addRequests.includes(req.body.id)) friendStatus = 'added';
+
+        const userToRemove = await User.findById(req.body.id);
+        if (!userToAdd) return res.status(200).json({ status: 'error', message: 'User does not exist' });
+
+        if (friendStatus === 'friends') {
+            user.friends.pull(userToRemove._id);
+            userToRemove.friends.pull(user._id);
+        } else if (friendStatus === 'added') {
+            user.addRequests.pull(userToRemove._id);
+            userToRemove.friendRequests.pull(user._id);
+        }
+        await user.save();
+        await userToRemove.save();
+
+        res.status(200).json({ status: 'success', message: 'Friend removed' });
+    } catch(err) {
+        console.error(err);
+    }
+});
+
 function authToken(req, res, next) {
     const token = req.cookies['auth-token'];
     if (!token) return res.sendStatus(401);
