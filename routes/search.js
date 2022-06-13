@@ -71,6 +71,46 @@ router.post('/unadduser', authToken, async (req, res) => {
     }
 });
 
+router.post('/acceptfriendrequest', authToken, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId);
+        if (!user) return res.status(200).json({ status: 'error', message: 'User does not exist' });
+
+        const friendToModify = await User.findById(req.body.id);
+        if (!friendToModify) return res.status(200).json({ status: 'error', message: 'Friend does not exist' });
+
+        user.friendRequests.pull(userToRemove._id);
+        friendToModify.addRequests.pull(user._id);
+        user.friends.push(friendToModify._id);
+        friendToModify.friends.push(user._id);
+        await user.save();
+        await friendToModify.save();
+
+        res.status(200).json({ status: 'success', message: 'Friend request accepted' });
+    } catch(err) {
+        console.error(err);
+    }
+});
+
+router.post('/declinefriendrequest', authToken, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId);
+        if (!user) return res.status(200).json({ status: 'error', message: 'User does not exist' });
+
+        const friendToModify = await User.findById(req.body.id);
+        if (!friendToModify) return res.status(200).json({ status: 'error', message: 'Friend does not exist' });
+
+        user.friendRequests.pull(userToRemove._id);
+        friendToModify.addRequests.pull(user._id);
+        await user.save();
+        await friendToModify.save();
+
+        res.status(200).json({ status: 'success', message: 'Friend request declined' });
+    } catch(err) {
+        console.error(err);
+    }
+});
+
 function authToken(req, res, next) {
     const token = req.cookies['auth-token'];
     if (!token) return res.sendStatus(401);
