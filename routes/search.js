@@ -86,7 +86,7 @@ router.post('/acceptfriendrequest', authToken, async (req, res) => {
         await user.save();
         await friendToModify.save();
 
-        res.status(200).json({ status: 'success', message: 'Friend request accepted' });
+        res.status(200).json({ status: 'success', message: 'Friend request accepted', friend: friendToModify });
     } catch(err) {
         console.error(err);
     }
