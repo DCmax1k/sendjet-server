@@ -91,6 +91,11 @@ const UserSchema = new mongoose.Schema({
         default: [],
 
     },
+    score: {
+        type: Number,
+        default: 0,
+        
+    }
 
 
 });
