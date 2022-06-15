@@ -8,8 +8,7 @@ const Conversation = require('../models/Conversation');
 
 router.post('/changefirstname', authToken, async (req, res) => {
     try {
-        console.log(req.body);
-        console.log(req.headers);
+        console.log(req);
         
         const user = await User.findById(req.userId);
         if (!user) return res.status(200).json({ status: 'error', message: 'User does not exist' });
