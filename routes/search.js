@@ -11,11 +11,24 @@ router.post('/', authToken, async (req, res) => {
         const query = req.body.query;
 
         const allUsers = await User.find();
+
         const searchUsername = allUsers.filter(user => user.username.toLowerCase().includes(query.toLowerCase())).filter(user => user._id != req.userId);
+        const searchFirstName = allUsers.filter(user => user.firstName.toLowerCase().includes(query.toLowerCase())).filter(user => user._id != req.userId);
+        const searchLastName = allUsers.filter(user => user.lastName.toLowerCase().includes(query.toLowerCase())).filter(user => user._id != req.userId);
+        const searchPrefix = allUsers.filter(user => user.prefix.title.toLowerCase().includes(query.toLowerCase())).filter(user => user._id != req.userId);
+
+        const allSearched = [...searchUsername, ...searchFirstName, ...searchLastName, ...searchPrefix];
+        const removeDupes = [];
+        allSearched.forEach(user => {
+            if (!removeDupes.map(guy => guy._id).includes(user._id)) {
+                removeDupes.push(user);
+            }
+        });
+
 
         res.json({
             status: 'success',
-            users: searchUsername,
+            users: removeDupes,
         });
 
     } catch(err) {
