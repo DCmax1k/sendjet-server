@@ -22,6 +22,11 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    usernameColor: {
+        type: String,
+        required: true,
+        default: '',
+    },
     dateJoined: {
         type: Date,
         default: Date.now,
@@ -95,7 +100,11 @@ const UserSchema = new mongoose.Schema({
         type: Number,
         default: 0,
         
-    }
+    },
+    premium: {
+        type: Boolean,
+        default: false,
+    },
 
 
 });
