@@ -34,6 +34,20 @@ router.post('/changelastname', authToken, async (req, res) => {
     }
 });
 
+router.post('/changeemail', authToken, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId);
+        if (!user) return res.status(200).json({ status: 'error', message: 'User does not exist' });
+
+        user.email = req.body.email;
+        await user.save();
+
+        res.status(200).json({ status: 'success', message: 'Last name changed' });
+    } catch(err) {
+        console.error(err);
+    }
+});
+
 function authToken(req, res, next) {
     const token = req.cookies['auth-token'];
     if (!token) return res.sendStatus(401);

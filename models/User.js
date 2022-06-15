@@ -24,7 +24,7 @@ const UserSchema = new mongoose.Schema({
     },
     usernameColor: {
         type: String,
-        default: '',
+        default: '#fff',
     },
     dateJoined: {
         type: Date,
