@@ -8,8 +8,6 @@ const Conversation = require('../models/Conversation');
 
 router.post('/changefirstname', authToken, async (req, res) => {
     try {
-        console.log(req);
-        
         const user = await User.findById(req.userId);
         if (!user) return res.status(200).json({ status: 'error', message: 'User does not exist' });
 
@@ -97,6 +95,7 @@ router.post('/changeprefixcolor', authToken, async (req, res) => {
 
 router.post('/changeusernamecolor', authToken, async (req, res) => {
     try {
+        console.log(req);
         const user = await User.findById(req.userId);
         if (!user) return res.status(200).json({ status: 'error', message: 'User does not exist' });
         if (!user.premium) return res.status(200).json({ status: 'error', message: 'You must be a premium user to change your username color' });
