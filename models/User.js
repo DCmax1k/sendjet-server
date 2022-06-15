@@ -24,7 +24,6 @@ const UserSchema = new mongoose.Schema({
     },
     usernameColor: {
         type: String,
-        required: true,
         default: '',
     },
     dateJoined: {
