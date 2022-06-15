@@ -54,8 +54,7 @@ router.post('/changeprefix', authToken, async (req, res) => {
         if (!user) return res.status(200).json({ status: 'error', message: 'User does not exist' });
         if (!user.premium) return res.status(200).json({ status: 'error', message: 'You must be a premium user to change your prefix' });
 
-        user.prefix.title = req.body.prefix;
-        await user.save();
+        await User.findByIdAndUpdate(req.userId, { 'prefix.title': req.body.prefix });
 
         res.status(200).json({ status: 'success', message: 'Prefix changed' });
     } catch(err) {
@@ -84,8 +83,7 @@ router.post('/changeprefixcolor', authToken, async (req, res) => {
         if (!user) return res.status(200).json({ status: 'error', message: 'User does not exist' });
         if (!user.premium) return res.status(200).json({ status: 'error', message: 'You must be a premium user to change your prefix color' });
 
-        user.prefix.color = req.body.color;
-        await user.save();
+        await User.findByIdAndUpdate(req.userId, { 'prefix.color': req.body.color });
 
         res.status(200).json({ status: 'success', message: 'Prefix color changed' });
     } catch(err) {
