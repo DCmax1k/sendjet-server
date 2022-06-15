@@ -68,6 +68,8 @@ router.post('/changeusername', authToken, async (req, res) => {
         if (!user) return res.status(200).json({ status: 'error', message: 'User does not exist' });
         if (!user.premium) return res.status(200).json({ status: 'error', message: 'You must be a premium user to change your username' });
 
+        const checkUser = await User.findOne({ username: req.body.username });
+        if (checkUser) return res.status(200).json({status: 'Username already exists'});
         user.username = req.body.username;
         await user.save();
 
