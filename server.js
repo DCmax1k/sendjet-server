@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
 
+// const server = require('http').createServer(app);
+//module.exports = server;
+
 // Imports
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
