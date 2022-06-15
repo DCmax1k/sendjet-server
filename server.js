@@ -52,6 +52,9 @@ app.use('/messages', messagesRoute);
 const searchRoute = require('./routes/search');
 app.use('/search', searchRoute);
 
+const profileRoute = require('./routes/profile');
+app.use('/profile', profileRoute);
+
 
 app.listen(process.env.PORT || 3001, () => {
     console.log('Server listening on port 3001');
