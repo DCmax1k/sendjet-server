@@ -12,7 +12,7 @@ let usersOnline = []; // Array of user objects with {socketID, userID, conversat
 io.on('connection', (socket) => {
     console.log('a user connected');
 
-    socket.on('joinUserRoom', ({ user }) => {
+    socket.on('joinUserRoom', user => {
         socket.join(user._id);
 
         const userTest = usersOnline.find(userOnline => userOnline.userID === user._id);
