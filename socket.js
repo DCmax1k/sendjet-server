@@ -30,7 +30,7 @@ io.on('connection', (socket) => {
 
 
     socket.on('disconnect', () => {
-        console.log('user disconnected');
+        console.log(socket.id + ' user disconnected');
 
         const user = usersOnline.find(user => user.socketID === socket.id);
         if (user) usersOnline = usersOnline.filter(u => u.userID !== user.userID);
@@ -48,6 +48,7 @@ function updateUser(user) {
         const friendOnline = usersOnline.find(user => user.userID === friend._id);
         if (friendOnline) friendsThatAreOnline.push(friend);
     });
+    console.log(friendsThatAreOnline);
     friendsThatAreOnline.forEach(friend => {
         io.to(friend._id).emit('updateUser', user);
     });
