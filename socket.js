@@ -34,8 +34,9 @@ io.on('connection', (socket) => {
 
         const user = usersOnline.find(user => user.socketID === socket.id);
         if (user) usersOnline = usersOnline.filter(u => u.userID !== user.userID);
-        setLastOnline(user.userID);
         io.emit('currentlyOnline', usersOnline);
+
+        setLastOnline(user.userID);
     });
 });
 
@@ -52,14 +53,10 @@ function updateUser(user) {
     });
 }
 
-function setLastOnline(userID) {
-    User.findById(userID, (err, user) => {
-        if (err) console.log(err);
-        user.lastOnline = Date.now();
-        user.save();
+async function setLastOnline(userID) {
 
-        updateUser(user);
-    });
+    const user = await User.findByIdAndUpdate(userID, { lastOnline: Date.now() });
+    updateUser(user);
 }
 
 
