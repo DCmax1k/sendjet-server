@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
-
+const http = require('http')
+const server = http.createServer(app);
+module.exports = server;
 // const server = require('http').createServer(app);
 //module.exports = server;
 
@@ -59,7 +61,7 @@ const profileRoute = require('./routes/profile');
 app.use('/profile', profileRoute);
 
 
-app.listen(process.env.PORT || 3001, () => {
+server.listen(process.env.PORT || 3001, () => {
     console.log('Server listening on port 3001');
 });
 
