@@ -4,6 +4,11 @@ const io = new Server(server);
 
 io.on('connection', (socket) => {
     console.log('a user connected');
+
+    socket.on('testing', (data) => {
+        console.log(data);
+    })
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
