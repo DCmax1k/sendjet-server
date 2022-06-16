@@ -5,6 +5,8 @@ const server = require('./server');
 const { Server } = require('socket.io');
 const io = new Server(server);
 
+const User = require('./models/User');
+
 const usersOnline = []; // Array of user objects with {socketID, userID, conversationRoom: conversationID}
 
 io.on('connection', (socket) => {
@@ -27,17 +29,12 @@ io.on('connection', (socket) => {
 
 
 
-
-
-
-
-
-
     socket.on('disconnect', () => {
         console.log('user disconnected');
 
         const user = usersOnline.find(user => user.socketID === socket.id);
         if (user) usersOnline.splice(usersOnline.map(guy => guy.userID).indexOf(user.userID), 1);
+        const dbUser = User.findByIdAndUpdate(user.userID, { lastOnline: Date.now() });
         io.emit('currentlyOnline', usersOnline);
     });
 })
