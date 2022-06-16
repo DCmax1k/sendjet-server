@@ -57,6 +57,7 @@ function updateUser(user) {
 async function setLastOnline(userID) {
 
     const user = await User.findByIdAndUpdate(userID, { lastOnline: Date.now() });
+    console.log('updating ', user);
     updateUser(user);
 }
 
