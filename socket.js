@@ -13,6 +13,7 @@ io.on('connection', (socket) => {
     console.log('a user connected');
 
     socket.on('joinUserRoom', user => {
+        console.log('joining room ', user);
         socket.join(user._id);
 
         const userTest = usersOnline.find(userOnline => userOnline.userID === user._id);
