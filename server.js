@@ -61,7 +61,7 @@ const profileRoute = require('./routes/profile');
 app.use('/profile', profileRoute);
 
 const socketio = require('./socket');
-app.use('/socketio', socketio);
+app.use(socketio);
 
 
 server.listen(process.env.PORT || 3001, () => {
