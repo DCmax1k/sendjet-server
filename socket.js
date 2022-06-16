@@ -5,15 +5,17 @@ const server = require('./server');
 const { Server } = require('socket.io');
 const io = new Server(server);
 
-const usersOnline = []; // Array of user objects with socketID and userID
+const usersOnline = []; // Array of user objects with {socketID, userID, conversationRoom: conversationID}
 
 io.on('connection', (socket) => {
     console.log('a user connected');
 
     socket.on('joinUserRoom', ({ id }) => {
         socket.join(id);
-        usersOnline.push({ socketID: socket.id, userID: id });
 
+        const user = usersOnline.find(user => user.socketID === socket.id);
+        if (!user) usersOnline.push({ socketID: socket.id, userID: id });
+        
         io.emit('currentlyOnline', usersOnline);
 
     });
