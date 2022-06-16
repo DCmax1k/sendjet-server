@@ -36,6 +36,7 @@ io.on('connection', (socket) => {
 
         const user = usersOnline.find(user => user.socketID === socket.id);
         if (user) usersOnline.splice(usersOnline.map(guy => guy.userID).indexOf(user.userID), 1);
+        io.emit('currentlyOnline', usersOnline);
     });
 })
 
