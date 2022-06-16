@@ -26,7 +26,6 @@ router.post('/', authToken, async (req, res) => {
             const {_doc: newConvo} = {...convo};
             const members = await User.find({ _id: { $in: newConvo.members } });
             newConvo.members = members;
-            console.log('members', newConvo.members);
             return newConvo;
         }));
 
