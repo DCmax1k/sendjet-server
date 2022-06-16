@@ -34,10 +34,12 @@ io.on('connection', (socket) => {
         console.log(socket.id + ' user disconnected');
 
         const user = usersOnline.find(user => user.socketID === socket.id);
-        if (user) usersOnline = usersOnline.filter(u => u.userID !== user.userID);
-        io.emit('currentlyOnline', usersOnline);
+        if (user) {
+            usersOnline = usersOnline.filter(u => u.userID !== user.userID);
+            io.emit('currentlyOnline', usersOnline);
 
-        setLastOnline(user.userID);
+            setLastOnline(user.userID);
+        }
     });
 });
 
