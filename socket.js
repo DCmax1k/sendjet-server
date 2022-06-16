@@ -7,7 +7,7 @@ const io = new Server(server);
 
 const User = require('./models/User');
 
-const usersOnline = []; // Array of user objects with {socketID, userID, conversationRoom: conversationID}
+let usersOnline = []; // Array of user objects with {socketID, userID, conversationRoom: conversationID}
 
 io.on('connection', (socket) => {
     console.log('a user connected');
@@ -33,7 +33,7 @@ io.on('connection', (socket) => {
         console.log('user disconnected');
 
         const user = usersOnline.find(user => user.socketID === socket.id);
-        if (user) usersOnline.splice(usersOnline.map(guy => guy.userID).indexOf(user.userID), 1);
+        if (user) usersOnline = usersOnline.filter(u => u.userID !== user.userID);
         setLastOnline(user.userID);
         io.emit('currentlyOnline', usersOnline);
     });
