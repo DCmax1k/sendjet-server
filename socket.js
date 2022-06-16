@@ -41,14 +41,14 @@ io.on('connection', (socket) => {
 
 // FUNCTIONS
 function updateUser(user) {
-    const friends = user.friends.map(friend => friend._id);
+    const friends = user.friends;
     const friendsThatAreOnline = [];
-    friends.forEach(friend_id => {
-        const friendOnline = usersOnline.find(user => user.userID === friend_id);
-        if (friendOnline) friendsThatAreOnline.push(friend_id);
+    friends.forEach(friend => {
+        const friendOnline = usersOnline.find(user => user.userID === friend._id);
+        if (friendOnline) friendsThatAreOnline.push(friend);
     });
     friendsThatAreOnline.forEach(friend => {
-        io.to(friend).emit('updateUser', user);
+        io.to(friend._id).emit('updateUser', user);
     });
 }
 
@@ -58,7 +58,6 @@ function setLastOnline(userID) {
         user.lastOnline = Date.now();
         user.save();
 
-        console.log(`${user.username} is now offline`);
         updateUser(user);
     });
 }
