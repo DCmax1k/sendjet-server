@@ -13,7 +13,7 @@ io.on('connection', (socket) => {
     socket.on('joinUserRoom', ({ id }) => {
         socket.join(id);
 
-        const user = usersOnline.find(user => user.socketID === socket.id);
+        const user = usersOnline.find(user => user.userID === id);
         if (!user) usersOnline.push({ socketID: socket.id, userID: id });
         
         io.emit('currentlyOnline', usersOnline);
