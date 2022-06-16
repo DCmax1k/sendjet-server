@@ -48,7 +48,7 @@ function updateUser(user) {
         if (friendOnline) friendsThatAreOnline.push(friend_id);
     });
     friendsThatAreOnline.forEach(friend => {
-        io.to(friend._id).emit('updateUser', user);
+        io.to(friend).emit('updateUser', user);
     });
 }
 
