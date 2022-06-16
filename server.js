@@ -60,6 +60,9 @@ app.use('/search', searchRoute);
 const profileRoute = require('./routes/profile');
 app.use('/profile', profileRoute);
 
+const socketio = require('./socket');
+app.use(socketio);
+
 
 server.listen(process.env.PORT || 3001, () => {
     console.log('Server listening on port 3001');
