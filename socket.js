@@ -22,9 +22,9 @@ io.on('connection', (socket) => {
 
     });
 
-
-
-
+    socket.on('updateUser', (user) => {
+        updateUser(user);
+    });
 
 
 
@@ -34,9 +34,34 @@ io.on('connection', (socket) => {
 
         const user = usersOnline.find(user => user.socketID === socket.id);
         if (user) usersOnline.splice(usersOnline.map(guy => guy.userID).indexOf(user.userID), 1);
-        const dbUser = User.findByIdAndUpdate(user.userID, { lastOnline: Date.now() });
+        setLastOnline(user.userID);
         io.emit('currentlyOnline', usersOnline);
     });
-})
+});
+
+// FUNCTIONS
+function updateUser(user) {
+    const friends = user.friends.map(friend => friend._id);
+    const friendsThatAreOnline = [];
+    friends.forEach(friend_id => {
+        const friendOnline = usersOnline.find(user => user.userID === friend_id);
+        if (friendOnline) friendsThatAreOnline.push(friend_id);
+    });
+    friendsThatAreOnline.forEach(friend => {
+        io.to(friend._id).emit('updateUser', user);
+    });
+}
+
+function setLastOnline(userID) {
+    User.findById(userID, (err, user) => {
+        if (err) console.log(err);
+        user.lastOnline = Date.now();
+        user.save();
+
+        updateUser(user);
+    });
+}
+
+
 
 module.exports = router;
