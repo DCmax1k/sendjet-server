@@ -58,6 +58,7 @@ function setLastOnline(userID) {
         user.lastOnline = Date.now();
         user.save();
 
+        console.log(`${user.username} is now offline`);
         updateUser(user);
     });
 }
