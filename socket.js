@@ -45,7 +45,7 @@ io.on('connection', (socket) => {
 });
 
 // FUNCTIONS
-function updateUser(preuser) {
+function updateUser(user) {
     const friendsThatAreOnline = user.friends.map(friend => {
         if (usersOnline.map(userOnline => userOnline.userID).includes(friend)) {
             return friend;
