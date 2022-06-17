@@ -45,13 +45,14 @@ io.on('connection', (socket) => {
 
 // FUNCTIONS
 function updateUser(user) {
-    const friends = user.friends;
-    const friendsThatAreOnline = [];
-    friends.forEach(friend => {
-        const friendOnline = usersOnline.find(user => user.userID === friend._id);
-        if (friendOnline) friendsThatAreOnline.push(friend);
+    const friendsThatAreOnline = user.friends.map(friend => {
+        if (usersOnline.map(userOnline => userOnline.userID).includes(friend._id)) {
+            return {
+                _id: friend._id,
+            }
+        }
     });
-    console.log(friendsThatAreOnline);
+    console.log('friends that are online', friendsThatAreOnline);
     friendsThatAreOnline.forEach(friend => {
         io.to(friend._id).emit('updateUser', user);
     });
