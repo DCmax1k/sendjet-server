@@ -23,7 +23,8 @@ io.on('connection', (socket) => {
 
     });
 
-    socket.on('updateUser', (user) => {
+    socket.on('updateUser', async (preuser) => {
+        const user = await User.findById(preuser._id);
         updateUser(user);
     });
 
@@ -44,7 +45,7 @@ io.on('connection', (socket) => {
 });
 
 // FUNCTIONS
-function updateUser(user) {
+function updateUser(preuser) {
     const friendsThatAreOnline = user.friends.map(friend => {
         if (usersOnline.map(userOnline => userOnline.userID).includes(friend)) {
             return friend;
