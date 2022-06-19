@@ -30,9 +30,10 @@ router.post('/createconversation', authToken, async (req, res) => {
         }
         // Check if convo already exists
         const checkConvo = await Conversation.findOne({ members: { $all: members } });
-        if (checkConvo) {
+        if (checkConvo && checkConvo.members.length === members.length) {
             res.json({
                 status: 'success',
+                message: 'Conversation already exists',
                 convo: checkConvo,
             });
         } else {
