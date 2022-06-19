@@ -105,10 +105,11 @@ router.post('/acceptfriendrequest', authToken, async (req, res) => {
         if (checkConvo) {
             res.status(200).json({ status: 'success', message: 'Friend request accepted', friend: friendToModify });
         } else {
+            const members = [user._id, friendToModify._id];
             const convoData = {
                 title: 'Group name',
                 subTitle: 'Group chat',
-                members: [user._id, friendToModify._id],
+                members,
                 messages: [],
                 dateCreated: Date.now(),
                 lastSentBy: user._id,
