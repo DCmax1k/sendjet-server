@@ -21,6 +21,10 @@ const ConvoSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+    dateActive: {
+        type: Date,
+        default: Date.now,
+    },
     lastSentBy: {
         type: String,
         required: true,
