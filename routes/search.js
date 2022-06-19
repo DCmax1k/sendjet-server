@@ -92,12 +92,40 @@ router.post('/acceptfriendrequest', authToken, async (req, res) => {
         const friendToModify = await User.findById(req.body.id);
         if (!friendToModify) return res.status(200).json({ status: 'error', message: 'Friend does not exist' });
 
+        // Take out friend request from user and add user as friend for both users
         user.friendRequests.pull(friendToModify._id);
         friendToModify.addRequests.pull(user._id);
         user.friends.push(friendToModify._id);
         friendToModify.friends.push(user._id);
         await user.save();
         await friendToModify.save();
+
+        // Add conversation between users if not already have one
+        const checkConvo = await Conversation.findOne({ users: { $all: [user._id, friendToModify._id] } });
+        if (checkConvo) {
+            res.status(200).json({ status: 'success', message: 'Friend request accepted', friend: friendToModify });
+        } else {
+            const convoData = {
+                title: 'Group name',
+                subTitle: 'Group chat',
+                members: [user._id, friendToModify._id],
+                messages: [],
+                dateCreated: Date.now(),
+                lastSentBy: user._id,
+                seenBy: [user._id],
+            }
+            const convo = await Conversation.create(convoData);
+            await convo.save();
+
+            // ADD CONVERSATION TO USERS
+            const users = await Promise.all(members.map(async member => {
+                return await User.findById(member);
+            }))
+            users.forEach(user => {
+                user.conversations.push(convo._id);
+                user.save();
+            });
+        }
 
         res.status(200).json({ status: 'success', message: 'Friend request accepted', friend: friendToModify });
     } catch(err) {

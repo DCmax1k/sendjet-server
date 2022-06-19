@@ -28,6 +28,23 @@ io.on('connection', (socket) => {
         updateUser(user);
     });
 
+    socket.on('adduser', ({user, adding}) => {
+        io.to(adding._id).emit('adduser', user);
+    });
+
+
+    socket.on('unadduser', ({user, unadding}) => {
+        io.to(unadding._id).emit('unadduser', user);
+    });
+
+    socket.on('acceptfriendrequest', ({user, friend}) => {
+        io.to(friend._id).emit('acceptfriendrequest', user);
+    });
+
+    socket.on('declinefriendrequest', ({user, friend}) => {
+        io.to(friend._id).emit('declinefriendrequest', user);
+    });
+
 
 
 

@@ -28,18 +28,27 @@ router.post('/createconversation', authToken, async (req, res) => {
             lastSentBy: user._id,
             seenBy: [user._id],
         }
-        const convo = await Conversation.create(convoData);
-        await convo.save();
+        // Check if convo already exists
+        const checkConvo = await Conversation.findOne({ members: { $all: members } });
+        if (checkConvo) {
+            res.json({
+                status: 'success',
+                convo: checkConvo,
+            });
+        } else {
 
-        // ADD CONVERSATION TO USERS
-        const users = await Promise.all(members.map(async member => {
-            return await User.findById(member);
-        }))
-        users.forEach(user => {
-            user.conversations.push(convo._id);
-            user.save();
-        });
+            const convo = await Conversation.create(convoData);
+            await convo.save();
 
+            // ADD CONVERSATION TO USERS
+            const users = await Promise.all(members.map(async member => {
+                return await User.findById(member);
+            }))
+            users.forEach(user => {
+                user.conversations.push(convo._id);
+                user.save();
+            });
+        }
         res.json({
             status: 'success',
             convo,
