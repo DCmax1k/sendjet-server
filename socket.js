@@ -6,6 +6,7 @@ const { Server } = require('socket.io');
 const io = new Server(server);
 
 const User = require('./models/User');
+const Conversation = require('./models/Conversation');
 
 let usersOnline = []; // Array of user objects with {socketID, userID, conversationRoom: conversationID}
 let rooms = {}; // Object that has each conversation id as a key, and an array of user ids in the room online currently
@@ -54,6 +55,8 @@ io.on('connection', (socket) => {
                 // Send member push notification
             }
         });
+        // Update in db
+        Conversation.findByIdAndUpdate(conversationID, { $push: { messages: message } });
     });
 
     socket.on('joinConversationRoom', ({conversationID, userID, members}) => {
