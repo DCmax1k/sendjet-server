@@ -47,8 +47,7 @@ io.on('connection', (socket) => {
         io.to(friend._id).emit('declinefriendrequest', user);
     });
 
-    socket.on('sendMessage', ({conversationID, message, members}) => {
-        Conversation.findByIdAndUpdate(conversationID, { $push: { messages: message } });
+    socket.on('sendMessage', async ({conversationID, message, members}) => {
         members.forEach(member => {
             if (member === message.sentBy) return;
             io.to(member).emit('sendMessage', { conversationID, message });
@@ -57,6 +56,9 @@ io.on('connection', (socket) => {
             }
         });
         // Update in db
+        const conversation = await Conversation.findById(conversationID);
+        conversation.messages.push(message);
+        await conversation.save();
     });
 
     socket.on('joinConversationRoom', ({conversationID, userID, members}) => {
