@@ -48,6 +48,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('sendMessage', ({conversationID, message, members}) => {
+        Conversation.findByIdAndUpdate(conversationID, { $push: { messages: message } });
         members.forEach(member => {
             if (member === message.sentBy) return;
             io.to(member).emit('sendMessage', { conversationID, message });
@@ -56,7 +57,6 @@ io.on('connection', (socket) => {
             }
         });
         // Update in db
-        Conversation.findByIdAndUpdate(conversationID, { $push: { messages: message } });
     });
 
     socket.on('joinConversationRoom', ({conversationID, userID, members}) => {
