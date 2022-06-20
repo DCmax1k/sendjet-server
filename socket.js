@@ -8,6 +8,7 @@ const io = new Server(server);
 const User = require('./models/User');
 
 let usersOnline = []; // Array of user objects with {socketID, userID, conversationRoom: conversationID}
+let rooms = {}; // Object that has each conversation id as a key, and an array of user ids in the room online currently
 
 io.on('connection', (socket) => {
     console.log('a user connected');
@@ -44,6 +45,25 @@ io.on('connection', (socket) => {
     socket.on('declinefriendrequest', ({user, friend}) => {
         io.to(friend._id).emit('declinefriendrequest', user);
     });
+
+    socket.on('sendMessage', ({conversationID, message, members}) => {
+        members.forEach(member => {
+            if (member === message.sentBy) return;
+            io.to(member).emit('sendMessage', { conversationID, message });
+            if (!usersOnline.map(userOnline => userOnline.userID).includes(member)) {
+                // Send member push notification
+            }
+        });
+    });
+
+    socket.on('joinConversationRoom', ({conversationID, userID, members}) => {
+        if (!rooms[conversationID]) rooms[conversationID] = [userID];
+        else rooms[conversationID].push(userID);
+        members.forEach(member => {
+            if (member === message.sentBy) return;
+            io.to(member).emit('joinConversationRoom', { conversationID, userID });
+        });
+    })
 
 
 
