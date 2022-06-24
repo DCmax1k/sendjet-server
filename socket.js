@@ -70,7 +70,7 @@ io.on('connection', (socket) => {
 
     socket.on('joinConversationRoom', ({conversationID, userID, members}) => {
         if (!rooms[conversationID]) rooms[conversationID] = [userID];
-        else rooms[conversationID].push(userID);
+        else if (!rooms[conversationID].includes(userID)) rooms[conversationID].push(userID);
         members.forEach(member => {
             io.to(member._id).emit('joinConversationRoom', { conversationID, userID, inChatUsers: rooms[conversationID] });
         });
