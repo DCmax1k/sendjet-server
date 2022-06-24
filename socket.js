@@ -72,7 +72,6 @@ io.on('connection', (socket) => {
         if (!rooms[conversationID]) rooms[conversationID] = [userID];
         else rooms[conversationID].push(userID);
         members.forEach(member => {
-            if (member._id === userID) return;
             io.to(member._id).emit('joinConversationRoom', { conversationID, userID, inChatUsers: rooms[conversationID] });
         });
     });
