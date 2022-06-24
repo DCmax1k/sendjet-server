@@ -30,6 +30,7 @@ router.post('/createconversation', authToken, async (req, res) => {
         }
         // Check if convo already exists
         const checkConvo = await Conversation.findOne({ members: { $all: members } });
+        let convo;
         if (checkConvo && checkConvo.members.length === members.length) {
             res.json({
                 status: 'success',
@@ -38,7 +39,7 @@ router.post('/createconversation', authToken, async (req, res) => {
             });
         } else {
 
-            const convo = await Conversation.create(convoData);
+            convo = await Conversation.create(convoData);
             await convo.save();
 
             // ADD CONVERSATION TO USERS
