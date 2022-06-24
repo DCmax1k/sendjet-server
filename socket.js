@@ -61,12 +61,29 @@ io.on('connection', (socket) => {
         await conversation.save();
     });
 
+    socket.on('addConversation', ({convoData, userID}) => {
+        convoData.members.forEach((member) => {
+            if (member._id === userID) return;
+            io.to(member._id).emit('addConversation', convoData);
+        })
+    });
+
     socket.on('joinConversationRoom', ({conversationID, userID, members}) => {
         if (!rooms[conversationID]) rooms[conversationID] = [userID];
         else rooms[conversationID].push(userID);
         members.forEach(member => {
-            if (member === message.sentBy) return;
-            io.to(member).emit('joinConversationRoom', { conversationID, userID });
+            if (member._id === userID) return;
+            io.to(member._id).emit('joinConversationRoom', { conversationID, userID });
+        });
+    });
+
+    socket.on('leaveConversation', ({conversationID, userID, members}) => {
+        if (!rooms[conversationID]) return;
+        if (rooms[conversationID].length === 1 && rooms[conversationID][0] === userID) delete rooms[conversationID];
+        else rooms[conversationID] = rooms[conversationID].filter(user => user !== userID);
+        members.forEach(member => {
+            if (member._id === userID) return;
+            io.to(member._id).emit('leaveConversation', { conversationID, userID });
         });
     })
 
