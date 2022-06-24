@@ -73,7 +73,7 @@ io.on('connection', (socket) => {
         else rooms[conversationID].push(userID);
         members.forEach(member => {
             if (member._id === userID) return;
-            io.to(member._id).emit('joinConversationRoom', { conversationID, userID });
+            io.to(member._id).emit('joinConversationRoom', { conversationID, userID, inChatUsers: rooms[conversationID] });
         });
     });
 
