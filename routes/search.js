@@ -115,7 +115,7 @@ router.post('/acceptfriendrequest', authToken, async (req, res) => {
                 lastSentBy: user._id,
                 seenBy: [user._id],
             }
-            const convo = await Conversation.create(convoData);
+            const convo = new Conversation(convoData);
             await convo.save();
 
             // ADD CONVERSATION TO USERS

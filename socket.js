@@ -15,7 +15,6 @@ io.on('connection', (socket) => {
     console.log('a user connected');
 
     socket.on('joinUserRoom', user => {
-        console.log('joining room ', user);
         socket.join(user._id);
 
         const userTest = usersOnline.find(userOnline => userOnline.userID === user._id);
@@ -89,7 +88,6 @@ io.on('connection', (socket) => {
     socket.on('isTyping', ({conversationID, userID, text}) => {
         const members = rooms[conversationID].filter(user => user !== userID);
         members.forEach(member => {
-            console.log('going to', member);
             io.to(member).emit('isTyping', {conversationID, userID, text});
         });
 

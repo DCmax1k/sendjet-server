@@ -44,7 +44,7 @@ const UserSchema = new mongoose.Schema({
     },
     profilePicture: {
         type: String,
-        default: '../assets/profilePlaceholder.png',
+        default: 'https://sendjet-app.herokuapp.com/profilePlaceholder.png',
     },
     rank: {
         type: String,
