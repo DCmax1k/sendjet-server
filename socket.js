@@ -38,8 +38,8 @@ io.on('connection', (socket) => {
         io.to(unadding._id).emit('unadduser', user);
     });
 
-    socket.on('acceptfriendrequest', ({user, friend}) => {
-        io.to(friend._id).emit('acceptfriendrequest', user);
+    socket.on('acceptfriendrequest', ({user, friend, convoID}) => {
+        io.to(friend._id).emit('acceptfriendrequest', {user, convoID});
     });
 
     socket.on('declinefriendrequest', ({user, friend}) => {
