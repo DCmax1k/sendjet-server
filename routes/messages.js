@@ -39,7 +39,7 @@ router.post('/createconversation', authToken, async (req, res) => {
             });
         } else {
 
-            convo = await Conversation.create(convoData);
+            convo = new Conversation(convoData);
             await convo.save();
 
             // ADD CONVERSATION TO USERS
