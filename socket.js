@@ -89,6 +89,7 @@ io.on('connection', (socket) => {
     socket.on('isTyping', ({conversationID, userID, text}) => {
         const members = rooms[conversationID].filter(user => user !== userID);
         members.forEach(member => {
+            console.log('going to', member);
             io.to(member).emit('isTyping', {conversationID, userID, text});
         });
 
