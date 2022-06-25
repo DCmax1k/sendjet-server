@@ -128,7 +128,7 @@ router.post('/acceptfriendrequest', authToken, async (req, res) => {
                 user.conversations.push(convo._id);
                 user.save();
             });
-            return res.status(200).json({ status: 'success', message: 'Friend request accepted', friend: friendToModify });
+            return res.status(200).json({ status: 'success', message: 'Friend request accepted', friend: friendToModify, convo, });
         }
     } catch(err) {
         console.error(err);
