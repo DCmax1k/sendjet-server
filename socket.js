@@ -57,6 +57,7 @@ io.on('connection', (socket) => {
         // Update in db
         const conversation = await Conversation.findById(conversationID);
         conversation.messages.push(message);
+        conversation.dateActive = Date.now();
         await conversation.save();
     });
 
