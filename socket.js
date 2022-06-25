@@ -84,7 +84,15 @@ io.on('connection', (socket) => {
             if (member._id === userID) return;
             io.to(member._id).emit('leaveConversation', { conversationID, userID });
         });
-    })
+    });
+
+    socket.on('isTyping', ({conversationID, userID, text}) => {
+        const members = rooms[conversationID].filter(user => user !== userID);
+        members.forEach(member => {
+            io.to(member).emit('isTyping', {conversationID, userID, text});
+        });
+
+    });
 
 
 
