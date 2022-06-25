@@ -15,7 +15,7 @@ const ConvoSchema = new mongoose.Schema({
         required: true,
     },
     messages: {
-        type: [Object], // { type: text | deleted | image | typing | video | audio, content: 'message | url', date: Date, sentBy: String, edited: Boolean}
+        type: [Object], // { type: text | deleted | image | typing | video | audio | someone changed title, content: 'message | url', date: Date, sentBy: String, edited: Boolean}
     },
     dateCreated: {
         type: Date,

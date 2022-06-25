@@ -100,6 +100,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log(socket.id + ' user disconnected');
 
+        // Update currently online
         const user = usersOnline.find(user => user.socketID === socket.id);
         if (user) {
             usersOnline = usersOnline.filter(u => u.userID !== user.userID);
@@ -107,6 +108,14 @@ io.on('connection', (socket) => {
 
             setLastOnline(user.userID);
         }
+
+        // Remove from rooms
+        const conversationIDS = Object.keys(rooms);
+        conversationIDS.forEach(convoID => {
+            if (rooms[convoID].includes(user.userID)) {
+                rooms[convoID] = rooms[convoID].filter(u => u !== user.userID)
+            }
+        })
     });
 });
 
