@@ -101,7 +101,7 @@ router.post('/acceptfriendrequest', authToken, async (req, res) => {
         await friendToModify.save();
 
         // Add conversation between users if not already have one
-        const checkConvo = await Conversation.findOne({ users: { $all: [user._id, friendToModify._id] } });
+        const checkConvo = await Conversation.findOne({ members: { $all: [user._id, friendToModify._id] } });
         console.log('checkConvo ', checkConvo);
         if (checkConvo && checkConvo.members.length === 2) {
             console.log('saing there is alreayd cn');
