@@ -21,7 +21,7 @@ router.post('/', authToken, async (req, res) => {
         const { _doc: modifiedUser} = {...user};
         if (!user) return res.status(200).json({ status: 'error', message: 'User does not exist' });
 
-        const conversations = await Conversation.find({ _id: { $in: [user.conversations] } });
+        const conversations = await Conversation.find({ _id: { $in: user.conversations } });
         await Promise.all(conversations.map(async convo => {
             const {_doc: newConvo} = {...convo};
             const members = await User.find({ _id: { $in: newConvo.members } });
