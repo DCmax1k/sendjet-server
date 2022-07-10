@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const fetch = require('node-fetch');
+
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/User');
@@ -119,7 +121,6 @@ router.post('/changeusernamecolor', authToken, async (req, res) => {
     }
 });
 
-const fetch = require('node-fetch');
 router.post('/changeprofilepicture', [authToken, upload], async (req, res) => {
     try {
         const img = await fetch(req.body.file);
