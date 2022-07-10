@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-const fetch = require('node-fetch');
-
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/User');
@@ -123,12 +121,10 @@ router.post('/changeusernamecolor', authToken, async (req, res) => {
 
 router.post('/changeprofilepicture', [authToken, upload], async (req, res) => {
     try {
-        const img = await fetch(req.body.file);
-        const bytes = await img.blob();
 
         const userRef = ref(storage, req.body.userId);
         const imgRef = ref(userRef, `profilePicture`);
-        await uploadBytes(imgRef, bytes);
+        await uploadBytes(imgRef, req.file.buffer);
 
         res.json({
             status: 'success',
