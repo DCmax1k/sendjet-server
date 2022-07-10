@@ -6,6 +6,9 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Conversation = require('../models/Conversation');
 
+const { getStorage, ref, deleteObject, uploadBytes } = require('firebase/storage');
+const storage = getStorage();
+
 router.post('/changefirstname', authToken, async (req, res) => {
     try {
         const user = await User.findById(req.userId);
@@ -108,6 +111,23 @@ router.post('/changeusernamecolor', authToken, async (req, res) => {
         console.error(err);
     }
 });
+
+router.post('/changeprofilepicture', authToken, async (req, res) => {
+    try {
+        const {bytes} = req.body;
+
+        const userRef = ref(storage, req.body.userId);
+        const imgRef = ref(userRef, `profilePicture`);
+        await uploadBytes(imgRef, bytes);
+
+        res.json({
+            status: 'success',
+        });
+
+    } catch(err) {
+        console.error(err);
+    }
+})
 
 function authToken(req, res, next) {
     const token = req.cookies['auth-token'];

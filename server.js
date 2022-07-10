@@ -3,8 +3,10 @@ const app = express();
 const http = require('http')
 const server = http.createServer(app);
 module.exports = server;
-// const server = require('http').createServer(app);
-//module.exports = server;
+
+const firebaseConfig = require('./firebaseConfig.json');
+import { initializeApp } from "firebase/app";
+const firebaseApp = initializeApp(firebaseConfig);
 
 // Imports
 require('dotenv').config();
