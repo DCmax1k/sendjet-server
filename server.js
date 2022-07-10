@@ -4,7 +4,7 @@ const http = require('http')
 const server = http.createServer(app);
 module.exports = server;
 
-const firebaseConfig = require('./firebaseConfig.json');
+const firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);
 import { initializeApp } from "firebase/app";
 const firebaseApp = initializeApp(firebaseConfig);
 
