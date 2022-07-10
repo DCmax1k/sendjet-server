@@ -8,6 +8,13 @@ const Conversation = require('../models/Conversation');
 
 const { getStorage, ref, deleteObject, uploadBytes } = require('firebase/storage');
 const storage = getStorage();
+const multer = require("multer");
+const upload = multer({
+  limits: {
+    fileSize: 1024 * 1024 * 10,
+
+  },
+}).single("photo");
 
 router.post('/changefirstname', authToken, async (req, res) => {
     try {
@@ -112,14 +119,13 @@ router.post('/changeusernamecolor', authToken, async (req, res) => {
     }
 });
 
-router.post('/changeprofilepicture', authToken, async (req, res) => {
+router.post('/changeprofilepicture', [authToken, upload], async (req, res) => {
     try {
-        const {bytes} = req.body;
-        console.log(bytes);
+        
 
         const userRef = ref(storage, req.body.userId);
         const imgRef = ref(userRef, `profilePicture`);
-        await uploadBytes(imgRef, bytes);
+        await uploadBytes(imgRef, req.file.buffer);
 
         res.json({
             status: 'success',
