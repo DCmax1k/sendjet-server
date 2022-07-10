@@ -121,7 +121,7 @@ router.post('/changeusernamecolor', authToken, async (req, res) => {
 
 router.post('/changeprofilepicture', [authToken, upload], async (req, res) => {
     try {
-        
+        console.log(req.file);
 
         const userRef = ref(storage, req.body.userId);
         const imgRef = ref(userRef, `profilePicture`);
