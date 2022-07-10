@@ -121,11 +121,12 @@ router.post('/changeusernamecolor', authToken, async (req, res) => {
 
 router.post('/changeprofilepicture', [authToken, upload], async (req, res) => {
     try {
-        console.log(req.body.file);
+        const img = await fetch(req.body.file);
+        const bytes = await img.blob();
 
         const userRef = ref(storage, req.body.userId);
         const imgRef = ref(userRef, `profilePicture`);
-        await uploadBytes(imgRef, req.body.file);
+        await uploadBytes(imgRef, bytes);
 
         res.json({
             status: 'success',
