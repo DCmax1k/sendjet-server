@@ -125,7 +125,7 @@ router.post('/changeprofilepicture', [authToken, upload], async (req, res) => {
 
         const userRef = ref(storage, req.body.userId);
         const imgRef = ref(userRef, `profilePicture`);
-        await uploadBytes(imgRef, req.file.buffer);
+        await uploadBytes(imgRef, req.file);
 
         res.json({
             status: 'success',
