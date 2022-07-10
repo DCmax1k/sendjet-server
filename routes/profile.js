@@ -119,6 +119,7 @@ router.post('/changeusernamecolor', authToken, async (req, res) => {
     }
 });
 
+const fetch = require('node-fetch');
 router.post('/changeprofilepicture', [authToken, upload], async (req, res) => {
     try {
         const img = await fetch(req.body.file);
