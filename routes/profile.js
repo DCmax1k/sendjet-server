@@ -6,16 +6,6 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Conversation = require('../models/Conversation');
 
-const { getStorage, ref, deleteObject, uploadBytes } = require('firebase/storage');
-const storage = getStorage();
-const multer = require("multer");
-const upload = multer({
-  limits: {
-    fileSize: 1024 * 1024 * 10,
-
-  },
-}).single("file");
-
 router.post('/changefirstname', authToken, async (req, res) => {
     try {
         const user = await User.findById(req.userId);
@@ -119,17 +109,10 @@ router.post('/changeusernamecolor', authToken, async (req, res) => {
     }
 });
 
-router.post('/changeprofilepicture', [authToken, upload], async (req, res) => {
+router.post('/updateprofilepicture', authToken, async (req, res) => {
     try {
-
-        const userRef = ref(storage, req.body.userId);
-        const imgRef = ref(userRef, `profilePicture`);
-        await uploadBytes(imgRef, req.file.buffer);
-
-        res.json({
-            status: 'success',
-        });
-
+        const updateUser = await User.findByIdAndUpdate(req.userId, { profilePicture: req.body.url });
+        res.status(200).json({ status: 'success', message: 'Profile image changed' });
     } catch(err) {
         console.error(err);
     }
