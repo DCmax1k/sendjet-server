@@ -4,10 +4,6 @@ const http = require('http')
 const server = http.createServer(app);
 module.exports = server;
 
-const firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);
-const { initializeApp } = require("firebase/app");
-const firebaseApp = initializeApp(firebaseConfig);
-
 // Imports
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
