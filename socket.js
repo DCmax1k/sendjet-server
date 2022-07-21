@@ -61,7 +61,7 @@ io.on('connection', (socket) => {
         await conversation.save();
     });
 
-    socket.on('messagesEditMessage', async ({conversationID, newMessage}) => {
+    socket.on('messagesEditMessage', async ({conversationID, newMessage, members}) => {
         members.forEach(member => {
             if (member === newMessage.sentBy) return;
             io.to(member).emit('messageEditMessage', { conversationID, newMessage });
