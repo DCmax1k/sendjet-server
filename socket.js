@@ -61,6 +61,23 @@ io.on('connection', (socket) => {
         await conversation.save();
     });
 
+    socket.on('messagesEditMessage', ({conversationID, newMessage}) => {
+        members.forEach(member => {
+            if (member === newMessage.sentBy) return;
+            io.to(member).emit('messageEditMessage', { conversationID, newMessage });
+        });
+
+        // Update in db
+        const conversation = await Conversation.findById(conversationID);
+        const allMessages = conversation.messages;
+        newMessage.edited = true;
+        const oldMessage = allMessages.find(mes => mes.date === newMessage.date);
+        const indexOfMessage = allMessages.indexOf(oldMessage);
+        allMessages.splice(indexOfMessage,1,newMessage);
+        conversation.messages = allMessages;
+        await conversation.save();
+    });
+
     socket.on('addConversation', ({convoData, userID}) => {
         convoData.members.forEach((member) => {
             if (member._id === userID) return;
