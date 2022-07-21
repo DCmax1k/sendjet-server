@@ -72,7 +72,7 @@ io.on('connection', (socket) => {
         const allMessages = conversation.messages;
         newMessage.edited = true;
         const oldMessage = allMessages.find(mes => mes.date === newMessage.date);
-        const indexOfMessage = allMessages.indexOfg(oldMessage);
+        const indexOfMessage = allMessages.indexOf(oldMessage);
         allMessages.splice(indexOfMessage,1,newMessage);
         conversation.messages = allMessages;
         conversation.dateActive = new Date();
