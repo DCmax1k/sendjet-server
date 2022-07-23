@@ -58,6 +58,7 @@ io.on('connection', (socket) => {
         const conversation = await Conversation.findById(conversationID);
         conversation.messages.push(message);
         conversation.dateActive = new Date();
+        conversation.seenBy = rooms[conversationID];
         await conversation.save();
     });
 
@@ -76,6 +77,7 @@ io.on('connection', (socket) => {
         allMessages.splice(indexOfMessage,1,newMessage);
         conversation.messages = allMessages;
         conversation.dateActive = new Date();
+        conversation.seenBy = rooms[conversationID];
         await conversation.save();
     });
 
@@ -86,12 +88,13 @@ io.on('connection', (socket) => {
         })
     });
 
-    socket.on('joinConversationRoom', ({conversationID, userID, members}) => {
+    socket.on('joinConversationRoom', async ({conversationID, userID, members}) => {
         if (!rooms[conversationID]) rooms[conversationID] = [userID];
         else if (!rooms[conversationID].includes(userID)) rooms[conversationID].push(userID);
         members.forEach(member => {
             io.to(member._id).emit('joinConversationRoom', { conversationID, userID, inChatUsers: rooms[conversationID] });
         });
+        await Conversation.findByIdAndUpdate(conversationID, { $push: {seenBy: userID}});
     });
 
     socket.on('leaveConversation', ({conversationID, userID, members}) => {
