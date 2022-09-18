@@ -63,7 +63,21 @@ router.post('/createconversation', authToken, async (req, res) => {
 
 router.post('/pinconversation', authToken, async (req, res) => {
     try {
-        await User.updateOne({_id: req.userId}, { $push: { pinnedConversations: req.conversationID}});
+        const user = await User.findById(req.userId);
+        user.pinnedConversations.push(req.body.conversationID);
+        await user.save();
+        res.json({
+            status: 'success',
+        })
+    } catch(err) {
+        console.error(err);
+    }
+});
+router.post('/unpinconversation', authToken, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId);
+        user.pinnedConversations.splice(user.pinnedConversations.indexOf(req.body.conversationID), 1);
+        await user.save();
         res.json({
             status: 'success',
         })
