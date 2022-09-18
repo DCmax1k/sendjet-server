@@ -93,7 +93,10 @@ const UserSchema = new mongoose.Schema({
     conversations: {
         type: [String],
         default: [],
-
+    },
+    pinnedConversations: {
+        type: [String], // id's of convos that are pinned
+        default: [],
     },
     score: {
         type: Number,

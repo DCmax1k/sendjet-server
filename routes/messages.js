@@ -61,6 +61,17 @@ router.post('/createconversation', authToken, async (req, res) => {
     }
 });
 
+router.post('/pinconversation', authToken, async (req, res) => {
+    try {
+        await User.updateOne({_id: req.userId}, { $push: { pinnedConversations: req.conversationID}});
+        res.json({
+            status: 'success',
+        })
+    } catch(err) {
+        console.error(err);
+    }
+});
+
 function authToken(req, res, next) {
     const token = req.cookies['auth-token'];
     if (!token) return res.sendStatus(401);
