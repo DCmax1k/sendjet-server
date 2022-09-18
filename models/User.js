@@ -65,11 +65,6 @@ const UserSchema = new mongoose.Schema({
         type: [String],
         default: [],
     },
-    userPIN: {
-        type: Number,
-        default: null,
-        unique: true,
-    },
     friendRequests: {
         type: [String],
         default: [],
@@ -86,10 +81,10 @@ const UserSchema = new mongoose.Schema({
         type: [String],
         default: [],
     },
-    // blockedBy: {
-    //     type: [String],
-    //     default: [],
-    // },
+    blockedBy: {
+        type: [String],
+        default: [],
+    },
     conversations: {
         type: [String],
         default: [],
@@ -107,7 +102,10 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-
+    extraData: {
+        type: Object,
+        default: {},
+    }
 
 });
 
