@@ -94,7 +94,7 @@ io.on('connection', (socket) => {
         const conversation = await Conversation.findById(conversationID);
         conversation.messages.push(message);
         conversation.dateActive = new Date();
-        conversation.seenBy = rooms[conversationID];
+        conversation.seenBy = rooms[conversationID] || [];
         await conversation.save();
     });
 
