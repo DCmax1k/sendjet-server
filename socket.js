@@ -4,6 +4,8 @@ const router = express.Router();
 const server = require('./server');
 const { Server } = require('socket.io');
 const io = new Server(server);
+const Expo = require('expo-server-sdk');
+let expo = new Expo();
 
 const User = require('./models/User');
 const Conversation = require('./models/Conversation');
@@ -47,13 +49,45 @@ io.on('connection', (socket) => {
     });
 
     socket.on('sendMessage', async ({conversationID, message, members}) => {
-        members.forEach(member => {
+
+        // Group members into a array to push notifications as a chunk
+        const pushMessages = [];
+        const sender = await User.findById(message.sentBy);
+
+        members.forEach(async member => {
+            // Send socket message
             if (member === message.sentBy) return;
             io.to(member).emit('sendMessage', { conversationID, message });
-            if (!usersOnline.map(userOnline => userOnline.userID).includes(member)) {
-                // Send member push notification
-            }
+
+            // Get push tokens from db and fill messages array with data
+            const user = await User.findById(member);
+            membersPushTokens[member] = expoPushToken;
+            pushMessages.push({
+                to: user.expoPushToken,
+                sound: 'default',
+                body: 'New message from ' + sender.username + '!',
+                data: {},
+            });
         });
+
+        // Send the push messages as a chunk
+        let chunks = expo.chunkPushNotifications(messages);
+        let tickets = [];
+        (async () => {
+
+            for (let chunk of chunks) {
+                try {
+                    let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+                    console.log(ticketChunk);
+                    tickets.push(...ticketChunk);
+
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        })();
+        
+
         // Update in db
         const conversation = await Conversation.findById(conversationID);
         conversation.messages.push(message);
