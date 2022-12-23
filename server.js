@@ -10,7 +10,6 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
-const Expo = require('expo-server-sdk');
 
 
 // Middlewares

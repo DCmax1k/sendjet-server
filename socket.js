@@ -4,8 +4,8 @@ const router = express.Router();
 const server = require('./server');
 const { Server } = require('socket.io');
 const io = new Server(server);
-const Expo = require('expo-server-sdk');
-let expo = new Expo();
+const {Expo} = require('expo-server-sdk');
+let expo = new Expo({});
 
 const User = require('./models/User');
 const Conversation = require('./models/Conversation');
