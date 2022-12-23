@@ -86,6 +86,19 @@ router.post('/unpinconversation', authToken, async (req, res) => {
     }
 });
 
+router.post('/changegroupname', authToken, async (req, res) => {
+    try {
+        const userID = req.userId;
+        const conversation = await Conversation.findById(req.body.conversationID);
+        if (!conversation.members.includes(userID)) return res.status(200).json({status: 'error', message: 'User not in group'});
+        conversation.title = req.body.newTitle;
+        await conversation.save();
+        res.status(200).json({status: 'success', message: 'Changed group name'});
+    } catch(err) {
+        console.error(err);
+    }
+})
+
 function authToken(req, res, next) {
     const token = req.cookies['auth-token'];
     if (!token) return res.sendStatus(401);
