@@ -5,7 +5,7 @@ const server = require('./server');
 const { Server } = require('socket.io');
 const io = new Server(server);
 const {Expo} = require('expo-server-sdk');
-let expo = new Expo({});
+let expo = new Expo();
 
 const User = require('./models/User');
 const Conversation = require('./models/Conversation');
@@ -54,24 +54,26 @@ io.on('connection', (socket) => {
         const pushMessages = [];
         const sender = await User.findById(message.sentBy);
 
-        members.forEach(async member => {
+        await Promise.all(members.map(async member => {
             // Send socket message
             if (member === message.sentBy) return;
             io.to(member).emit('sendMessage', { conversationID, message });
 
             // Get push tokens from db and fill messages array with data
             const user = await User.findById(member);
-            membersPushTokens[member] = expoPushToken;
-            pushMessages.push({
-                to: user.expoPushToken,
-                sound: 'default',
-                body: 'New message from ' + sender.username + '!',
-                data: {},
-            });
-        });
+            if (user.expoPushToken.length > 0) {
+                pushMessages.push({
+                    to: user.expoPushToken,
+                    sound: 'default',
+                    body: 'New message from ' + sender.username + '!',
+                    data: {},
+                }); 
+            }
+            
+        }));
 
         // Send the push messages as a chunk
-        let chunks = expo.chunkPushNotifications(messages);
+        let chunks = expo.chunkPushNotifications(pushMessages);
         let tickets = [];
         (async () => {
 
@@ -142,7 +144,8 @@ io.on('connection', (socket) => {
     });
 
     socket.on('isTyping', ({conversationID, userID, text}) => {
-        const members = rooms[conversationID].filter(user => user !== userID);
+        //const members = rooms[conversationID].filter(user => user !== userID);
+        const members = rooms[conversationID];
         members.forEach(member => {
             io.to(member).emit('isTyping', {conversationID, userID, text});
         });
@@ -189,7 +192,6 @@ function updateUser(user) {
 async function setLastOnline(userID) {
 
     const user = await User.findByIdAndUpdate(userID, { lastOnline: Date.now() });
-    console.log('updating ', user);
     updateUser(user);
 }
 
