@@ -118,6 +118,15 @@ router.post('/updateprofilepicture', authToken, async (req, res) => {
     }
 })
 
+router.post('/setpushtoken', authToken, async (req, res) => {
+    try {
+        const user = await User.findByIdAndUpdate(req.userId, {expoPushToken: req.body.token});
+        res.status(200).json({status: 'success', message: 'Token set'});
+    } catch(err) {
+        console.error(err);
+    }
+})
+
 function authToken(req, res, next) {
     const token = req.cookies['auth-token'];
     if (!token) return res.sendStatus(401);

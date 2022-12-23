@@ -102,9 +102,9 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    extraData: {
-        type: Object,
-        default: {},
+    expoPushToken: {
+        type: String,
+        default: "",
     }
 
 });
