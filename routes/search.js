@@ -6,6 +6,8 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Conversation = require('../models/Conversation');
 
+const sendPushNoti = require('../utils/sendPushNoti');
+
 router.post('/', authToken, async (req, res) => {
     try {
         const query = req.body.query;
@@ -44,6 +46,16 @@ router.post('/adduser', authToken, async (req, res) => {
 
         const userToAdd = await User.findById(req.body.id);
         if (!userToAdd) return res.status(200).json({ status: 'error', message: 'User does not exist' });
+
+        // Send push notification to userToAdd
+        const messages = [];
+        messages.push({
+            to: userToAdd.expoPushToken,
+            sound: "default",
+            body: user.username + " would like to be friends!",
+            data: {},
+        });
+        sendPushNoti(messages);
 
         user.addRequests.push(userToAdd._id);
         await user.save();
@@ -99,6 +111,16 @@ router.post('/acceptfriendrequest', authToken, async (req, res) => {
         friendToModify.friends.push(user._id);
         await user.save();
         await friendToModify.save();
+
+        // Send noti to friendToModify (the one who originally requested) a noti that their friend accepted
+        const messages = [];
+        messages.push({
+            to: friendToModify.expoPushToken,
+            sound: "default",
+            body: user.username + " is now your friend, start chatting!",
+            data: {},
+        });
+        sendPushNoti(messages);
 
         // Add conversation between users if not already have one
         const checkConvo = await Conversation.findOne({ members: { $all: [user._id, friendToModify._id] } });

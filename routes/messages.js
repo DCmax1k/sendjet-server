@@ -7,6 +7,8 @@ const path = require('path');
 const User = require('../models/User');
 const Conversation = require('../models/Conversation');
 
+const sendPushNoti = require("../utils/sendPushNoti");
+
 router.post('/createconversation', authToken, async (req, res) => {
     try {
         // CREATE CONVERSATION
@@ -38,7 +40,10 @@ router.post('/createconversation', authToken, async (req, res) => {
                 convo: checkConvo,
             });
         } else {
+            // Push notification array
+            const messages = [];
 
+            // Create db convo
             convo = new Conversation(convoData);
             await convo.save();
 
@@ -46,10 +51,21 @@ router.post('/createconversation', authToken, async (req, res) => {
             const users = await Promise.all(members.map(async member => {
                 return await User.findById(member);
             }))
-            users.forEach(user => {
-                user.conversations.push(convo._id);
-                user.save();
+            users.forEach(u => {
+                if (u._id != user._id) {
+                    // If not the user that created the convo, send push noti
+                    messages.push({
+                        to: u.expoPushToken,
+                        sound: 'default',
+                        body: "New conversation created by " + user.username + "!",
+                        data: {},
+                    });
+                }
+                u.conversations.push(convo._id);
+                u.save();
             });
+            
+            sendPushNoti(messages);
         }
         res.json({
             status: 'success',
