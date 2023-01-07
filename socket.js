@@ -4,8 +4,10 @@ const router = express.Router();
 const server = require('./server');
 const { Server } = require('socket.io');
 const io = new Server(server);
-const {Expo} = require('expo-server-sdk');
-let expo = new Expo();
+
+// const {Expo} = require('expo-server-sdk');
+// let expo = new Expo();
+const sendPushNoti = require("./utils/sendPushNoti");
 
 const User = require('./models/User');
 const Conversation = require('./models/Conversation');
@@ -73,21 +75,22 @@ io.on('connection', (socket) => {
         }));
 
         // Send the push messages as a chunk
-        let chunks = expo.chunkPushNotifications(pushMessages);
-        let tickets = [];
-        (async () => {
+        sendPushNoti(pushMessages);
+        // let chunks = expo.chunkPushNotifications(pushMessages);
+        // let tickets = [];
+        // (async () => {
 
-            for (let chunk of chunks) {
-                try {
-                    let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-                    console.log(ticketChunk);
-                    tickets.push(...ticketChunk);
+        //     for (let chunk of chunks) {
+        //         try {
+        //             let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+        //             console.log(ticketChunk);
+        //             tickets.push(...ticketChunk);
 
-                } catch (error) {
-                    console.error(error);
-                }
-            }
-        })();
+        //         } catch (error) {
+        //             console.error(error);
+        //         }
+        //     }
+        // })();
         
 
         // Update in db
