@@ -52,7 +52,7 @@ router.post('/createconversation', authToken, async (req, res) => {
                 return await User.findById(member);
             }))
             users.forEach(u => {
-                if (u._id != user._id) {
+                //if (u._id != user._id) {
                     // If not the user that created the convo, send push noti
                     messages.push({
                         to: u.expoPushToken,
@@ -60,7 +60,7 @@ router.post('/createconversation', authToken, async (req, res) => {
                         body: "New conversation created by " + user.username + "!",
                         data: {},
                     });
-                }
+               // }
                 u.conversations.push(convo._id);
                 u.save();
             });
@@ -114,6 +114,31 @@ router.post('/changegroupname', authToken, async (req, res) => {
         console.error(err);
     }
 });
+
+router.post('/leaveconversation', authToken, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId);
+        const conversation = await Conversation.findById(req.conversationID);
+
+        // Remove from user conversations
+        user.conversations = user.conversations.filter(convo => convo._id != conversation._id);
+        await user.save();
+
+        // Remove from actual conversation
+        if (conversation.members.length == 1 && conversation.members[0] == user._id) {
+            conversation.members = [];
+            conversation.title = "ALL MEMBERS LEFT";
+            await conversation.save();
+        } else {
+            conversation.members = conversation.members.filter(mem => mem._id != user._id);
+            await conversation.save();
+        }
+
+        res.status(200).json({status: 'success', message: 'Left conversation'});
+    } catch(err) {
+        console.error(err);
+    }
+})
 
 function authToken(req, res, next) {
     const token = req.cookies['auth-token'];
