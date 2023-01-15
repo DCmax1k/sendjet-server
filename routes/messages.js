@@ -118,20 +118,18 @@ router.post('/changegroupname', authToken, async (req, res) => {
 router.post('/leaveconversation', authToken, async (req, res) => {
     try {
         const user = await User.findById(req.userId);
-        const conversation = await Conversation.findById(req.conversationID);
+        const conversation = await Conversation.findById(req.body.conversationID);
 
-        // Remove from user conversations
-        user.conversations = user.conversations.filter(convo => convo._id != conversation._id);
+        // Remove conversation from user
+        user.conversations = user.conversations.filter(convo => convo != conversation._id);
         await user.save();
 
-        // Remove from actual conversation
+        // Remove user fromconversation or delete convo
         if (conversation.members.length == 1 && conversation.members[0] == user._id) {
-            conversation.members = [];
-            conversation.title = "ALL MEMBERS LEFT";
-            await conversation.save();
+            await Conversation.findByIdAndUpdate(conversation._id, { members: [], title: "ALL MEMBERS LEFT"});
         } else {
-            conversation.members = conversation.members.filter(mem => mem._id != user._id);
-            await conversation.save();
+            const convoMembers = conversation.members.filter(mem => mem != user._id);
+            await Conversation.findByIdAndUpdate(conversation._id, {members: convoMembers});
         }
 
         res.status(200).json({status: 'success', message: 'Left conversation'});

@@ -116,7 +116,7 @@ router.post('/updateprofilepicture', authToken, async (req, res) => {
     } catch(err) {
         console.error(err);
     }
-})
+});
 
 router.post('/setpushtoken', authToken, async (req, res) => {
     try {
@@ -125,7 +125,7 @@ router.post('/setpushtoken', authToken, async (req, res) => {
     } catch(err) {
         console.error(err);
     }
-})
+});
 
 function authToken(req, res, next) {
     const token = req.cookies['auth-token'];

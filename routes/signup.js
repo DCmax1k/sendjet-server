@@ -21,12 +21,6 @@ function validatePass(pass) {
 function validateUsername(username) {
     return username.length <= 10;
 }
-pinGeneration = async () => {
-    let pin = Math.floor(Math.random() * 9999) + 1000;
-    const checkUserPin = await User.findOne({ userPIN: pin, });
-    if (checkUserPin) return pinGeneration();
-    return pin;
-}
 
 router.post('/', async (req, res) => {
     try {
@@ -39,8 +33,6 @@ router.post('/', async (req, res) => {
         if (!validatePass(password)) return res.status(200).json({status: 'Password must be at least 8 characters long'});
         if (!validateUsername(username)) return res.status(200).json({status: 'Username must be 10 characters or less'});
 
-        let userPIN = await pinGeneration();
-
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = new User({
             firstName,
@@ -48,7 +40,6 @@ router.post('/', async (req, res) => {
             username,
             email,
             password: hashedPassword,
-            userPIN: userPIN,
         });
         await user.save();
 
